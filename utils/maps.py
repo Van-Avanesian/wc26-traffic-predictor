@@ -23,11 +23,29 @@ load_dotenv()
 _client = None
 
 
+def _get_api_key() -> str:
+    """
+    Retrieve the Google Maps API key from environment or Streamlit secrets.
+
+    Checks in order:
+      1. GOOGLE_MAPS_API_KEY environment variable (local .env via python-dotenv)
+      2. st.secrets["GOOGLE_MAPS_API_KEY"] (Streamlit Community Cloud deployment)
+    """
+    api_key = os.getenv("GOOGLE_MAPS_API_KEY", "")
+    if not api_key or api_key == "your_google_maps_api_key_here":
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("GOOGLE_MAPS_API_KEY", "")
+        except Exception:
+            pass
+    return api_key
+
+
 def _get_client():
     """Lazy-initialize the Google Maps client."""
     global _client
     if _client is None:
-        api_key = os.getenv("GOOGLE_MAPS_API_KEY", "")
+        api_key = _get_api_key()
         if not api_key or api_key == "your_google_maps_api_key_here":
             return None
         _client = googlemaps.Client(key=api_key)
@@ -214,5 +232,5 @@ def _estimate_coords_from_address(address: str) -> Optional[dict]:
 
 def is_api_configured() -> bool:
     """Check whether a valid Google Maps API key is present."""
-    key = os.getenv("GOOGLE_MAPS_API_KEY", "")
+    key = _get_api_key()
     return bool(key) and key != "your_google_maps_api_key_here"

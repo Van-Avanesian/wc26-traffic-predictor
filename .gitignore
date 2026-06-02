@@ -31,7 +31,7 @@ env/
 *.swp
 *.swo
 
-# Streamlit
+# Streamlit — secrets file must never be committed, config is fine
 .streamlit/secrets.toml
 
 # Jupyter
