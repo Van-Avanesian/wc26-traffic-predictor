@@ -163,32 +163,36 @@ def _time_of_day_factor(weekday: int, hour: int) -> float:
     is_weekend = (weekday >= 5)
 
     if is_weekend:
-        if   hour <  7: return 1.00   # overnight / very early
-        elif hour < 10: return 1.05   # weekend morning
-        elif hour < 14: return 1.15   # midday activity
-        elif hour < 18: return 1.20   # afternoon errands / events
-        elif hour < 21: return 1.15   # weekend evening
-        else:           return 1.05   # night
+        if   hour <  7: return 1.00   # overnight
+        elif hour < 10: return 1.02   # weekend morning — light
+        elif hour < 14: return 1.06   # midday activity
+        elif hour < 18: return 1.09   # afternoon errands / events
+        elif hour < 21: return 1.06   # weekend evening
+        else:           return 1.02   # night
 
     # ── Weekday base (Mon–Thu; Friday overrides PM below) ──────────────────
+    # These factors represent a neutral mid-sized US city (Kansas City level).
+    # City-specific congestion is captured by city_traffic_factor in venues.py,
+    # which is applied multiplicatively on top. Keeping the base factors modest
+    # prevents double-counting — suburban routes (e.g. Dallas → Arlington) stay
+    # close to free-flow while high city_factor venues (e.g. SoFi/LA) scale up.
     if   hour <  6: base = 1.00   # overnight
-    elif hour <  7: base = 1.05   # pre-rush
-    elif hour <  8: base = 1.30   # AM rush building
-    elif hour <  9: base = 1.55   # peak AM rush
-    elif hour < 10: base = 1.35   # post AM rush taper
-    elif hour < 14: base = 1.10   # midday
-    elif hour < 15: base = 1.20   # early afternoon / school pickup
-    elif hour < 16: base = 1.40   # PM rush building
-    elif hour < 17: base = 1.65   # PM rush
-    elif hour < 18: base = 1.80   # peak PM rush
-    elif hour < 19: base = 1.60   # evening taper
-    elif hour < 20: base = 1.35
-    elif hour < 21: base = 1.20
-    elif hour < 22: base = 1.10
-    else:           base = 1.05   # night
+    elif hour <  7: base = 1.03   # pre-rush
+    elif hour <  8: base = 1.20   # AM rush building
+    elif hour <  9: base = 1.42   # peak AM rush
+    elif hour < 10: base = 1.22   # post AM rush taper
+    elif hour < 14: base = 1.04   # midday — near free-flow for most cities
+    elif hour < 15: base = 1.06   # early afternoon
+    elif hour < 16: base = 1.08   # pre-PM rush
+    elif hour < 17: base = 1.12   # PM rush building
+    elif hour < 18: base = 1.28   # peak PM rush
+    elif hour < 19: base = 1.18   # evening taper
+    elif hour < 20: base = 1.10
+    elif hour < 21: base = 1.06
+    elif hour < 22: base = 1.03
+    else:           base = 1.01   # night
 
-    # Friday afternoon is the worst commute of the week (~15% worse than
-    # a typical weekday PM rush due to end-of-week + leisure travel)
+    # Friday afternoon is the worst commute of the week
     if is_friday and 14 <= hour <= 19:
         base *= 1.15
 

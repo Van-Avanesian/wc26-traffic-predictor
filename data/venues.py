@@ -15,10 +15,23 @@ wc_premium: additional multiplier applied on top of base curves
   there are more fan zones, and security perimeters are larger.
 
 city_traffic_factor: multiplier reflecting how much worse congestion gets
-  in this metro relative to a typical US city at the same time of day.
-  1.0 = baseline (Kansas City). 1.40 = LA (405 near SoFi is among the
-  most congested highway segments in the country).
-  Applied to the normal baseline drive, independent of the WC event.
+  on routes TO this specific venue relative to a neutral mid-sized city
+  (Kansas City baseline = 1.05).
+
+  This factor carries the city-level variation in the baseline model.
+  The time-of-day factors in utils/maps.py are intentionally kept modest
+  (representing a neutral city), so city_traffic_factor does the heavy
+  lifting for genuinely congested metros.
+
+  Range: 1.05 (suburban, minimal congestion) → 1.55 (LA 405, worst in US).
+
+  Key anchors:
+    1.05 = Arrowhead/KC, AT&T/Arlington — suburban, multiple highway approaches
+    1.18 = Hard Rock/Miami — I-95 corridor, moderate
+    1.28 = Mercedes-Benz/Atlanta — downtown, Spaghetti Junction
+    1.38 = MetLife/NJ — NJ Turnpike + Route 3 approach is punishing
+    1.55 = SoFi/LA — 405 near Inglewood is the most congested highway
+           segment in the country; Friday PM is legitimately 2× free-flow
 """
 
 VENUES = {
@@ -33,7 +46,7 @@ VENUES = {
         "transit_score": 0.65,       # NJ Transit game-day trains run directly
         "parking_factor": 0.55,      # Massive lots but they bottleneck on exit
         "wc_premium": 1.20,          # Hosting the Final + biggest NYC metro
-        "city_traffic_factor": 1.18, # NJ Turnpike / Route 3 approach is punishing; NYC metro density
+        "city_traffic_factor": 1.38, # NJ Turnpike / Route 3 approach is punishing; NYC metro density
     },
     "hard_rock": {
         "name": "Hard Rock Stadium",
@@ -46,7 +59,7 @@ VENUES = {
         "transit_score": 0.25,       # Very car-dependent, limited transit
         "parking_factor": 0.60,
         "wc_premium": 1.15,
-        "city_traffic_factor": 1.14, # I-95 and US-1 corridor notoriously congested
+        "city_traffic_factor": 1.18, # I-95 and US-1 corridor notoriously congested
     },
     "mercedes_benz": {
         "name": "Mercedes-Benz Stadium",
@@ -59,7 +72,7 @@ VENUES = {
         "transit_score": 0.60,       # MARTA rail direct to stadium
         "parking_factor": 0.45,      # Downtown Atlanta parking is tight
         "wc_premium": 1.12,
-        "city_traffic_factor": 1.16, # Consistently top 3 worst in US; Spaghetti Junction, I-285
+        "city_traffic_factor": 1.28, # Consistently top 3 worst in US; Spaghetti Junction, I-285
     },
     "lincoln_financial": {
         "name": "Lincoln Financial Field",
@@ -72,7 +85,7 @@ VENUES = {
         "transit_score": 0.55,       # SEPTA Broad Street Line to stadium
         "parking_factor": 0.50,
         "wc_premium": 1.12,
-        "city_traffic_factor": 1.12, # Significant but not extreme vs. NYC/LA/ATL
+        "city_traffic_factor": 1.20, # Significant but not extreme vs. NYC/LA/ATL
     },
     "lumen_field": {
         "name": "Lumen Field",
@@ -85,7 +98,7 @@ VENUES = {
         "transit_score": 0.70,       # Link Light Rail nearby, very transit-friendly city
         "parking_factor": 0.40,      # Limited downtown parking
         "wc_premium": 1.10,
-        "city_traffic_factor": 1.14, # Geographic bottlenecks (water), I-5 downtown brutal
+        "city_traffic_factor": 1.20, # Geographic bottlenecks (water), I-5 downtown brutal
     },
     "att": {
         "name": "AT&T Stadium",
@@ -98,7 +111,7 @@ VENUES = {
         "transit_score": 0.10,       # No meaningful transit, fully car-dependent
         "parking_factor": 0.70,      # Massive parking inventory around stadium
         "wc_premium": 1.15,
-        "city_traffic_factor": 1.13, # Heavy DFW sprawl; I-20/I-30/I-35 corridors
+        "city_traffic_factor": 1.06, # Suburban Arlington — multiple highway approaches, less bottlenecked
     },
     "nrg": {
         "name": "NRG Stadium",
@@ -111,7 +124,7 @@ VENUES = {
         "transit_score": 0.30,       # METRORail Red Line nearby
         "parking_factor": 0.65,
         "wc_premium": 1.15,
-        "city_traffic_factor": 1.08, # Everyone drives but highway network is massive
+        "city_traffic_factor": 1.10, # Everyone drives but highway network is massive
     },
     "arrowhead": {
         "name": "Arrowhead Stadium",
@@ -137,7 +150,7 @@ VENUES = {
         "transit_score": 0.45,       # Metro K Line nearby but LA is car-heavy
         "parking_factor": 0.55,
         "wc_premium": 1.18,          # LA traffic already notorious + WC premium
-        "city_traffic_factor": 1.22, # 405 near Inglewood = one of the most congested segments in the US
+        "city_traffic_factor": 1.55, # 405 near Inglewood = most congested highway segment in the US
     },
     "levis": {
         "name": "Levi's Stadium",
@@ -150,7 +163,7 @@ VENUES = {
         "transit_score": 0.50,       # VTA light rail + Caltrain nearby
         "parking_factor": 0.55,
         "wc_premium": 1.12,
-        "city_traffic_factor": 1.15, # 101 and 880 Silicon Valley corridor severely congested
+        "city_traffic_factor": 1.22, # 101 and 880 Silicon Valley corridor severely congested
     },
     "gillette": {
         "name": "Gillette Stadium",
