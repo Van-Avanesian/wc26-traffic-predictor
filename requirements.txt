@@ -1,11 +1,19 @@
-streamlit==1.35.0
-googlemaps==4.10.0
-numpy==1.26.4
-scipy==1.13.0
-pandas==2.2.2
-plotly==5.22.0
-python-dotenv==1.0.1
-pytz==2024.1
-requests==2.32.3
-xgboost==1.7.6
-scikit-learn==1.4.2
+# Version ranges (not exact pins) so the app installs cleanly on both
+# local Python 3.9 and Streamlit Community Cloud's newer Python (3.14).
+# Exact pins of older versions have no prebuilt wheels on newer Pythons,
+# which forces the cloud builder to compile from source — and fail.
+
+streamlit>=1.40,<1.50
+googlemaps>=4.10
+numpy>=1.26
+scipy>=1.11
+pandas>=2.0
+plotly>=5.22,<6
+python-dotenv>=1.0
+pytz>=2024.1
+requests>=2.31
+scikit-learn>=1.4
+
+# Note for local macOS without Homebrew: xgboost 2.x+ needs libomp.
+# If `import xgboost` fails locally, run: pip3 install xgboost==1.7.6
+xgboost>=1.7
