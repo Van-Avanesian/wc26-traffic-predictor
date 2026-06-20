@@ -1,6 +1,6 @@
 # ⚽ WC 2026 Traffic Predictor
 
-A Streamlit web app that tells you exactly when to leave home to beat the traffic for any FIFA World Cup 2026 match across all 11 US venues — powered by two interchangeable prediction models.
+A Streamlit web app that tells you exactly when to leave home to beat the traffic for any FIFA World Cup 2026 match across all 11 U.S. venues — powered by two interchangeable prediction models.
 
 > **Live demo:** [wc26-traffic-predictor.streamlit.app](https://wc26-traffic-predictor.streamlit.app)
 
