@@ -81,23 +81,29 @@ FIFA_RANKINGS: dict = {
     "Ghana":         45,
 
     # Mid-tier (46–65)
-    "Cameroon":    46,
-    "Canada":      47,
-    "Panama":      48,
-    "Tunisia":     49,
-    "Honduras":    50,
-    "Qatar":       51,
-    "Uzbekistan":  52,
-    "Iraq":        53,
-    "Bolivia":     54,
-    "Jamaica":     55,
-    "El Salvador": 56,
-    "New Zealand": 57,
+    "Cameroon":     46,
+    "Canada":       47,
+    "Panama":       48,
+    "Tunisia":      49,
+    "Honduras":     50,
+    "Qatar":        51,
+    "Uzbekistan":   52,
+    "Iraq":         53,
+    "Bolivia":      54,
+    "Jamaica":      55,
+    "El Salvador":  56,
+    "New Zealand":  57,
+    "South Africa": 58,
+    "DR Congo":     59,
+    "Congo DR":     59,   # alternate spelling
 
     # Lower tier (66+)
-    "Curaçao":     72,
-    "Curacao":     72,   # alternate spelling
-    "Haiti":       78,
+    "Cabo Verde":   68,
+    "Cape Verde":   68,   # alternate spelling
+    "Curaçao":      72,
+    "Curacao":      72,   # alternate spelling
+    "Bosnia and Herzegovina": 74,
+    "Haiti":        78,
 }
 
 # ---------------------------------------------------------------------------

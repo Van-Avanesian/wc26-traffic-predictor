@@ -292,90 +292,37 @@ WC_SCHEDULE = [
     # but venues are pre-assigned. These are labeled with TBD teams.
     # The app will display them as "Round of 32 Match" etc.
 
-    # Round of 32 — June 28–July 4
-    {
-        "game_id": "R32_NYJ_01",
-        "venue_id": "metlife",
-        "stage": "Round of 32",
-        "stage_importance": 2,
-        "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 6, 29),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
-    },
-    {
-        "game_id": "R32_MIA_01",
-        "venue_id": "hard_rock",
-        "stage": "Round of 32",
-        "stage_importance": 2,
-        "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 6, 30),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
-    },
+    # Round of 32 — June 28–July 3 (actual matchups)
+    # Times are venue-LOCAL. Four R32 games (Netherlands–Morocco, Mexico–Ecuador,
+    # Portugal–Croatia, Switzerland–Algeria) are played in Mexico/Canada and are
+    # not included because this app only covers the 11 US venues.
+
+    # Sun Jun 28
     {
         "game_id": "R32_LAX_01",
         "venue_id": "sofi",
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "South Africa",
+        "away": "Canada",
         "date": date(2026, 6, 28),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(12, 0),   # 12pm PT
         "expected_capacity_pct": 0.97,
     },
+
+    # Mon Jun 29
     {
         "game_id": "R32_HOU_01",
         "venue_id": "nrg",
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 7, 1),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
-    },
-    {
-        "game_id": "R32_DAL_01",
-        "venue_id": "att",
-        "stage": "Round of 32",
-        "stage_importance": 2,
-        "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 6, 30),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
-    },
-    {
-        "game_id": "R32_ATL_01",
-        "venue_id": "mercedes_benz",
-        "stage": "Round of 32",
-        "stage_importance": 2,
-        "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Brazil",
+        "away": "Japan",
         "date": date(2026, 6, 29),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
-    },
-    {
-        "game_id": "R32_PHI_01",
-        "venue_id": "lincoln_financial",
-        "stage": "Round of 32",
-        "stage_importance": 2,
-        "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 7, 1),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
+        "kickoff_local": time(12, 0),   # 12pm CT (1pm ET)
+        "expected_capacity_pct": 0.99,
     },
     {
         "game_id": "R32_BOS_01",
@@ -383,34 +330,50 @@ WC_SCHEDULE = [
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 6, 28),
-        "kickoff_local": time(18, 0),
+        "home": "Germany",
+        "away": "Paraguay",
+        "date": date(2026, 6, 29),
+        "kickoff_local": time(16, 30),  # 4:30pm ET
         "expected_capacity_pct": 0.97,
     },
+
+    # Tue Jun 30
     {
-        "game_id": "R32_SFO_01",
-        "venue_id": "levis",
+        "game_id": "R32_DAL_01",
+        "venue_id": "att",
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 7, 2),
-        "kickoff_local": time(18, 0),
-        "expected_capacity_pct": 0.97,
+        "home": "Ivory Coast",
+        "away": "Norway",
+        "date": date(2026, 6, 30),
+        "kickoff_local": time(12, 0),   # 12pm CT (1pm ET)
+        "expected_capacity_pct": 0.94,
     },
     {
-        "game_id": "R32_KC_01",
-        "venue_id": "arrowhead",
+        "game_id": "R32_NYJ_01",
+        "venue_id": "metlife",
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
-        "date": date(2026, 7, 2),
-        "kickoff_local": time(18, 0),
+        "home": "France",
+        "away": "Sweden",
+        "date": date(2026, 6, 30),
+        "kickoff_local": time(17, 0),   # 5pm ET
+        "expected_capacity_pct": 0.98,
+    },
+
+    # Wed Jul 1
+    {
+        "game_id": "R32_ATL_01",
+        "venue_id": "mercedes_benz",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "England",
+        "away": "Congo DR",
+        "date": date(2026, 7, 1),
+        "kickoff_local": time(12, 0),   # 12pm ET
         "expected_capacity_pct": 0.97,
     },
     {
@@ -419,11 +382,75 @@ WC_SCHEDULE = [
         "stage": "Round of 32",
         "stage_importance": 2,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Belgium",
+        "away": "Senegal",
+        "date": date(2026, 7, 1),
+        "kickoff_local": time(13, 0),   # 1pm PT
+        "expected_capacity_pct": 0.96,
+    },
+    {
+        "game_id": "R32_SFO_01",
+        "venue_id": "levis",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "USA",
+        "away": "Bosnia and Herzegovina",
+        "date": date(2026, 7, 1),
+        "kickoff_local": time(17, 0),   # 5pm PT
+        "expected_capacity_pct": 0.99,
+    },
+
+    # Thu Jul 2
+    {
+        "game_id": "R32_LAX_02",
+        "venue_id": "sofi",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "Spain",
+        "away": "Austria",
+        "date": date(2026, 7, 2),
+        "kickoff_local": time(12, 0),   # 12pm PT
+        "expected_capacity_pct": 0.98,
+    },
+
+    # Fri Jul 3
+    {
+        "game_id": "R32_DAL_02",
+        "venue_id": "att",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "Australia",
+        "away": "Egypt",
         "date": date(2026, 7, 3),
-        "kickoff_local": time(15, 0),
-        "expected_capacity_pct": 0.97,
+        "kickoff_local": time(13, 0),   # 1pm CT (2pm ET)
+        "expected_capacity_pct": 0.94,
+    },
+    {
+        "game_id": "R32_MIA_01",
+        "venue_id": "hard_rock",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "Argentina",
+        "away": "Cape Verde",
+        "date": date(2026, 7, 3),
+        "kickoff_local": time(18, 0),   # 6pm ET
+        "expected_capacity_pct": 0.99,
+    },
+    {
+        "game_id": "R32_KC_01",
+        "venue_id": "arrowhead",
+        "stage": "Round of 32",
+        "stage_importance": 2,
+        "group": None,
+        "home": "Colombia",
+        "away": "Ghana",
+        "date": date(2026, 7, 3),
+        "kickoff_local": time(20, 30),  # 8:30pm CT
+        "expected_capacity_pct": 0.96,
     },
 
     # Round of 16 — July 4–8
