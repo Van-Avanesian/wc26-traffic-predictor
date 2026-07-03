@@ -30,9 +30,8 @@ from data.venues import VENUES
 from data.schedule import WC_SCHEDULE, get_game_label
 from model.multiplier import find_departure_time, get_peak_multiplier
 from model.xgboost_multiplier import (
-    train_model as xgb_train_model,
+    load_or_train,
     find_departure_time_xgb,
-    get_feature_importances,
 )
 from utils.maps import (
     geocode_address,
@@ -131,21 +130,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ─── Load / train XGBoost model once at startup ──────────────────────────────
+# ─── XGBoost model loading (lazy + from disk) ────────────────────────────────
 
-@st.cache_resource(show_spinner="🤖 Training XGBoost model on 53 reference events...")
+@st.cache_resource(show_spinner="🤖 Loading XGBoost model…")
 def load_xgb_model():
     """
-    Train the XGBoost model on all reference events.
-    @st.cache_resource means this runs once per server session,
-    not on every user interaction.
+    Load the pre-trained XGBoost model artifact from disk.
+
+    The model is trained once offline (see model/xgb_model.json) and committed,
+    so this is a fast file read — not a retrain. If the artifact is somehow
+    missing, load_or_train() falls back to training on the fly.
+
+    This is called LAZILY — only when the user actually selects the XGBoost
+    model — so the landing page and the hand-tuned model load instantly on a
+    cold start instead of waiting for any model work.
     """
-    model, cv_mae, feature_names = xgb_train_model()
-    importances = get_feature_importances(model, feature_names)
-    return model, cv_mae, feature_names, importances
-
-
-xgb_model, xgb_cv_mae, xgb_feature_names, xgb_importances = load_xgb_model()
+    return load_or_train()
 
 
 # ─── Helper functions ────────────────────────────────────────────────────────
@@ -366,12 +366,17 @@ with st.sidebar:
             "by hand against Copa América and CWC reference data.\n\n"
             "**XGBoost:** Trains on 53 real reference events and learns "
             "venue × event-type × attendance interactions automatically. "
-            f"5-fold CV MAE: ±{xgb_cv_mae} multiplier units."
+            "5-fold CV MAE: ±0.14 multiplier units."
         ),
     )
     use_xgb = model_choice.startswith("🤖")
 
+    # Lazy-load the XGBoost model ONLY when it's actually selected, so the
+    # hand-tuned path and the landing page never wait on model loading.
+    # load_xgb_model() reads the committed artifact from disk (fast) and is
+    # cached, so it runs at most once per session.
     if use_xgb:
+        xgb_model, xgb_cv_mae, xgb_feature_names, xgb_importances = load_xgb_model()
         st.markdown(f"""
 <div class="model-info-box">
 🤖 <b>XGBoost model ready</b><br>

@@ -205,6 +205,88 @@ def train_model(events=None, venues=None):
 
 
 # ---------------------------------------------------------------------------
+# Model persistence (train once, deploy the artifact)
+#
+# Training + 5-fold CV is slow on cold, throttled cloud CPUs. Instead of
+# retraining on every server start, we train once locally, save the fitted
+# model to disk, and commit it. The app then just LOADS the saved model —
+# milliseconds instead of minutes.
+#
+# We use XGBoost's native JSON format for the booster (version-stable across
+# xgboost releases, unlike pickle) plus a small sidecar JSON for the metadata
+# (cv_mae, feature names, importances) that isn't part of the booster itself.
+# ---------------------------------------------------------------------------
+
+import os
+import json
+
+_MODEL_DIR   = os.path.dirname(__file__)
+MODEL_PATH   = os.path.join(_MODEL_DIR, "xgb_model.json")
+META_PATH    = os.path.join(_MODEL_DIR, "xgb_meta.json")
+
+
+def save_model(model, cv_mae, feature_names, path=MODEL_PATH, meta_path=META_PATH):
+    """
+    Persist a trained model + its metadata to disk.
+
+    Writes two files:
+      xgb_model.json — the fitted booster (XGBoost native format)
+      xgb_meta.json  — cv_mae, feature_names, and precomputed importances
+    """
+    model.save_model(path)
+    meta = {
+        "cv_mae":        cv_mae,
+        "feature_names": feature_names,
+        "importances":   get_feature_importances(model, feature_names),
+    }
+    with open(meta_path, "w") as f:
+        json.dump(meta, f, indent=2)
+
+
+def load_saved_model(path=MODEL_PATH, meta_path=META_PATH):
+    """
+    Load a previously saved model + metadata from disk.
+
+    Returns (model, cv_mae, feature_names, importances), or None if either
+    file is missing (so the caller can fall back to training on the fly).
+    """
+    if not (os.path.exists(path) and os.path.exists(meta_path)):
+        return None
+
+    model = XGBRegressor()
+    model.load_model(path)
+
+    with open(meta_path) as f:
+        meta = json.load(f)
+
+    return model, meta["cv_mae"], meta["feature_names"], meta["importances"]
+
+
+def load_or_train(path=MODEL_PATH, meta_path=META_PATH):
+    """
+    Return a ready-to-use (model, cv_mae, feature_names, importances).
+
+    Fast path: load the committed model artifact from disk (milliseconds).
+    Fallback:  if the artifact is missing, train from scratch — and save it
+               so the next start is fast.
+
+    This is the function the app should call at startup.
+    """
+    saved = load_saved_model(path, meta_path)
+    if saved is not None:
+        return saved
+
+    # No artifact on disk — train, persist for next time, and return.
+    model, cv_mae, feature_names = train_model()
+    try:
+        save_model(model, cv_mae, feature_names, path, meta_path)
+    except Exception:
+        pass  # read-only filesystem is fine; we still return the trained model
+    importances = get_feature_importances(model, feature_names)
+    return model, cv_mae, feature_names, importances
+
+
+# ---------------------------------------------------------------------------
 # WC game feature vector
 # ---------------------------------------------------------------------------
 

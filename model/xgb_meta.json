@@ -1,0 +1,25 @@
+{
+  "cv_mae": 0.139,
+  "feature_names": [
+    "event_type_score",
+    "attendance_pct",
+    "is_sold_out",
+    "transit_score",
+    "parking_factor",
+    "city_traffic_factor",
+    "capacity_norm",
+    "kickoff_hour",
+    "is_evening"
+  ],
+  "importances": {
+    "event_type_score": 0.4648,
+    "attendance_pct": 0.1522,
+    "is_sold_out": 0.0961,
+    "is_evening": 0.0885,
+    "parking_factor": 0.0672,
+    "capacity_norm": 0.0449,
+    "kickoff_hour": 0.0344,
+    "city_traffic_factor": 0.0266,
+    "transit_score": 0.0255
+  }
+}
