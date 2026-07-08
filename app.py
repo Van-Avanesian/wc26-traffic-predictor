@@ -563,6 +563,25 @@ else:
         st.error("Could not calculate travel time. Please check your address.")
         st.stop()
 
+    # ── Guard: is the stadium realistically drivable for game day? ────────────
+    # This tool models game-day traffic for fans driving from within the
+    # stadium's region. If the normal drive is implausibly long, the user is
+    # out of the area (e.g. LA → Boston) and would fly — applying an event
+    # traffic multiplier to a multi-day drive produces meaningless results
+    # like "leave 2 days early."
+    MAX_REASONABLE_DRIVE_MIN = 240  # 4 hours one-way
+    if baseline_min > MAX_REASONABLE_DRIVE_MIN:
+        st.warning(
+            f"🚗✈️ **{venue['name']}** is about **{format_minutes(baseline_min)}** away "
+            f"by car from your address — too far to realistically drive on game day "
+            f"(you'd almost certainly fly).\n\n"
+            f"This tool predicts game-day *driving* traffic for fans coming from within "
+            f"the stadium's region. To get a useful prediction, enter an address closer "
+            f"to **{venue['city']}**.",
+            icon="🚗",
+        )
+        st.stop()
+
     # ── Run selected model ───────────────────────────────────────────────────
     if use_xgb:
         result = find_departure_time_xgb(
