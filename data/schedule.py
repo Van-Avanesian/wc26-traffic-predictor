@@ -523,53 +523,70 @@ WC_SCHEDULE = [
         "expected_capacity_pct": 0.99,
     },
 
-    # Quarter-Finals — July 9–11
+    # Tue Jul 7  (Colombia v Switzerland is at BC Place, Vancouver — out of scope)
     {
-        "game_id": "QF_NYJ_01",
-        "venue_id": "metlife",
+        "game_id": "R16_ATL_01",
+        "venue_id": "mercedes_benz",
+        "stage": "Round of 16",
+        "stage_importance": 3,
+        "group": None,
+        "home": "Argentina",
+        "away": "Egypt",
+        "date": date(2026, 7, 7),
+        "kickoff_local": time(12, 0),   # 9am PT → 12pm ET
+        "expected_capacity_pct": 0.98,
+    },
+
+    # Quarter-Finals — July 9–11 (actual matchups)
+    # Thu Jul 9
+    {
+        "game_id": "QF_BOS_01",
+        "venue_id": "gillette",
         "stage": "Quarter-Final",
         "stage_importance": 4,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "France",
+        "away": "Morocco",
         "date": date(2026, 7, 9),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(16, 0),   # 1pm PT → 4pm ET
         "expected_capacity_pct": 1.0,
     },
+    # Fri Jul 10
     {
         "game_id": "QF_LAX_01",
         "venue_id": "sofi",
         "stage": "Quarter-Final",
         "stage_importance": 4,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Spain",
+        "away": "Belgium",
         "date": date(2026, 7, 10),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(12, 0),   # 12pm PT
         "expected_capacity_pct": 1.0,
     },
+    # Sat Jul 11
     {
-        "game_id": "QF_DAL_01",
-        "venue_id": "att",
+        "game_id": "QF_MIA_01",
+        "venue_id": "hard_rock",
         "stage": "Quarter-Final",
         "stage_importance": 4,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Norway",
+        "away": "England",
         "date": date(2026, 7, 11),
-        "kickoff_local": time(15, 0),
+        "kickoff_local": time(17, 0),   # 2pm PT → 5pm ET
         "expected_capacity_pct": 1.0,
     },
     {
-        "game_id": "QF_ATL_01",
-        "venue_id": "mercedes_benz",
+        "game_id": "QF_KC_01",
+        "venue_id": "arrowhead",
         "stage": "Quarter-Final",
         "stage_importance": 4,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Argentina",
+        "away": "Switzerland",
         "date": date(2026, 7, 11),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(20, 0),   # 6pm PT → 8pm CT
         "expected_capacity_pct": 1.0,
     },
 

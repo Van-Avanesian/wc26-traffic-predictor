@@ -597,16 +597,24 @@ else:
     away    = selected_game["away"]
     matchup = f"{home} vs {away}" if home != "TBD" else selected_game["stage"]
 
+    tz_abbr = kickoff_dt.tzname()   # e.g. PDT, EDT, CDT — the stadium's local zone
+
     st.markdown(f"## {matchup}")
     st.markdown(
         f"📍 **{venue['name']}** · {venue['city']}  \n"
         f"📅 **{kickoff_dt.strftime('%A, %B %d, %Y')}** · "
-        f"Kickoff {kickoff_dt.strftime('%-I:%M %p')} local  \n"
+        f"Kickoff {kickoff_dt.strftime('%-I:%M %p')} {tz_abbr}  \n"
         f"🏆 **{selected_game['stage']}**"
     )
 
     if coords.get("formatted_address"):
         st.markdown(f"🏠 Routing from: *{coords['formatted_address']}*")
+
+    st.info(
+        f"🕐 All times below are shown in the **stadium's local time zone "
+        f"({tz_abbr})** — the time zone you'll be driving in.",
+        icon="🕐",
+    )
 
     st.markdown("---")
 
