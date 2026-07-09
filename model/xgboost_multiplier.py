@@ -461,8 +461,12 @@ def find_departure_time_xgb(
         pre_sigma=pre_sigma,
     )
 
-    # Sweep departure times T-5h → T+0h in 5-minute steps
-    sweep_offsets_h = np.arange(-5.0, 0.05, 5 / 60)
+    # Sweep departure times backward from kickoff in 5-minute steps. The window
+    # must extend at least one full travel time before kickoff so that long
+    # drives (>5h) still find a feasible departure instead of falling back to a
+    # nonsensical "leave 5h early" result. See find_departure_time for details.
+    lookback_h = max(5.0, baseline_minutes / 60.0 + 6.0)
+    sweep_offsets_h = np.arange(-lookback_h, 0.05, 5 / 60)
     best_departure  = None
     best_travel_min = None
     best_multiplier = None
@@ -478,13 +482,11 @@ def find_departure_time_xgb(
             best_travel_min = travel_min
             best_multiplier = mult
 
-    # Fallback: if no window works, use T-5h
+    # Safety fallback: leave exactly one normal travel time before arrival.
     if best_departure is None:
-        offset_h        = -5.0
-        mult            = float(curve(offset_h))
-        best_departure  = kickoff_dt + timedelta(hours=offset_h)
-        best_travel_min = baseline_minutes * mult
-        best_multiplier = mult
+        best_travel_min = baseline_minutes
+        best_departure  = desired_arrival_dt - timedelta(minutes=best_travel_min)
+        best_multiplier = 1.0
 
     extra_min = best_travel_min - baseline_minutes
     severity  = _severity_label(best_multiplier)

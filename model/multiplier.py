@@ -255,8 +255,17 @@ def find_departure_time(
         away=away,
     )
 
-    # Sweep departure times from T-5h to T+0h in 5-minute increments
-    sweep_offsets_h = np.arange(-5.0, 0.05, 5 / 60)  # every 5 min
+    # Sweep departure times backward from kickoff in 5-minute increments.
+    #
+    # Event congestion only builds in the ~5h before kickoff, but the drive
+    # itself can be much longer than that (a multi-hour, or even multi-day,
+    # trip). The search window must therefore extend at least one full travel
+    # time before kickoff — otherwise, for any drive longer than 5 hours, no
+    # candidate departure could arrive on time and we'd fall back to a
+    # nonsensical "leave 5 hours early" result. (Far from the event the
+    # multiplier is ~1.0, so baseline_minutes is the worst-case travel time.)
+    lookback_h = max(5.0, baseline_minutes / 60.0 + 6.0)
+    sweep_offsets_h = np.arange(-lookback_h, 0.05, 5 / 60)  # every 5 min
     best_departure = None
     best_travel_min = None
     best_multiplier = None
@@ -273,13 +282,12 @@ def find_departure_time(
             best_travel_min = travel_min
             best_multiplier = mult
 
-    # If no departure time works even at T-5h, use T-5h and warn
+    # Safety fallback (should be unreachable now that the window fits the drive):
+    # leave exactly one normal travel time before the desired arrival.
     if best_departure is None:
-        offset_h = -5.0
-        mult = float(curve(offset_h))
-        best_departure = kickoff_dt + timedelta(hours=offset_h)
-        best_travel_min = baseline_minutes * mult
-        best_multiplier = mult
+        best_travel_min = baseline_minutes
+        best_departure = desired_arrival_dt - timedelta(minutes=best_travel_min)
+        best_multiplier = 1.0
 
     extra_min = best_travel_min - baseline_minutes
     severity = _severity_label(best_multiplier)

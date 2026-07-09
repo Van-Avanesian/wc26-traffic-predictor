@@ -164,6 +164,19 @@ def format_time(dt: datetime) -> str:
     return dt.strftime("%-I:%M %p")
 
 
+def format_time_dated(dt: datetime, ref: datetime) -> str:
+    """
+    Format a time, adding the date when it falls on a different day than `ref`.
+
+    Same-day  → '6:45 PM'
+    Other day → 'Thu Jun 11, 5:00 AM'  (so long, multi-day drives read correctly
+                                        instead of looking like a same-day time)
+    """
+    if dt.date() == ref.date():
+        return dt.strftime("%-I:%M %p")
+    return dt.strftime("%a %b %-d, %-I:%M %p")
+
+
 def localize_kickoff(game: dict) -> datetime:
     """Combine the game date and kickoff_local time into a timezone-aware datetime."""
     venue = VENUES[game["venue_id"]]
@@ -563,25 +576,6 @@ else:
         st.error("Could not calculate travel time. Please check your address.")
         st.stop()
 
-    # ── Guard: is the stadium realistically drivable for game day? ────────────
-    # This tool models game-day traffic for fans driving from within the
-    # stadium's region. If the normal drive is implausibly long, the user is
-    # out of the area (e.g. LA → Boston) and would fly — applying an event
-    # traffic multiplier to a multi-day drive produces meaningless results
-    # like "leave 2 days early."
-    MAX_REASONABLE_DRIVE_MIN = 240  # 4 hours one-way
-    if baseline_min > MAX_REASONABLE_DRIVE_MIN:
-        st.warning(
-            f"🚗✈️ **{venue['name']}** is about **{format_minutes(baseline_min)}** away "
-            f"by car from your address — too far to realistically drive on game day "
-            f"(you'd almost certainly fly).\n\n"
-            f"This tool predicts game-day *driving* traffic for fans coming from within "
-            f"the stadium's region. To get a useful prediction, enter an address closer "
-            f"to **{venue['city']}**.",
-            icon="🚗",
-        )
-        st.stop()
-
     # ── Run selected model ───────────────────────────────────────────────────
     if use_xgb:
         result = find_departure_time_xgb(
@@ -705,8 +699,8 @@ else:
             "⚽ Kickoff",
         ],
         "Time": [
-            format_time(result["departure_time"]),
-            format_time(arrival_est),
+            format_time_dated(result["departure_time"], kickoff_dt),
+            format_time_dated(arrival_est, kickoff_dt),
             format_time(kickoff_dt),
         ],
         "Notes": [
