@@ -264,6 +264,29 @@ def find_departure_time(
     # candidate departure could arrive on time and we'd fall back to a
     # nonsensical "leave 5 hours early" result. (Far from the event the
     # multiplier is ~1.0, so baseline_minutes is the worst-case travel time.)
+    # Event congestion only affects the LOCAL APPROACH to the stadium — the
+    # final stretch through the venue's metro area — not the entire trip.
+    #
+    #   • Normal local drive: the whole drive IS the approach, so the multiplier
+    #     applies to all of it (behavior unchanged from before).
+    #   • Long-haul drive: only the last ~90 min are in the metro. The highway
+    #     miles happen days/hours earlier at normal speed; the driver still hits
+    #     event traffic on the final approach near arrival.
+    #
+    # Evaluating the multiplier at *departure* (as before) is why a cross-country
+    # trip showed "+0 min": 44h before kickoff there's no game traffic yet. We
+    # instead evaluate it when the driver reaches the approach, which for a long
+    # drive is near arrival — capturing the real final-stretch congestion.
+    LOCAL_APPROACH_CAP_MIN = 90.0
+    affected_min = min(baseline_minutes, LOCAL_APPROACH_CAP_MIN)
+    highway_min  = baseline_minutes - affected_min
+    highway_h    = highway_min / 60.0
+
+    def _travel_at(offset_h):
+        """Travel time (min) and approach multiplier for departing at offset_h."""
+        approach_mult = float(curve(offset_h + highway_h))
+        return highway_min + affected_min * approach_mult, approach_mult
+
     lookback_h = max(5.0, baseline_minutes / 60.0 + 6.0)
     sweep_offsets_h = np.arange(-lookback_h, 0.05, 5 / 60)  # every 5 min
     best_departure = None
@@ -272,8 +295,7 @@ def find_departure_time(
 
     for offset_h in sweep_offsets_h:
         departure_dt = kickoff_dt + timedelta(hours=offset_h)
-        mult = float(curve(offset_h))
-        travel_min = baseline_minutes * mult
+        travel_min, mult = _travel_at(offset_h)
         arrival_dt = departure_dt + timedelta(minutes=travel_min)
 
         if arrival_dt <= desired_arrival_dt:
@@ -295,8 +317,9 @@ def find_departure_time(
     # Build full curve data for the chart (T-5h to T+4h in 15-min steps)
     chart_offsets = np.arange(-5.0, 4.1, 0.25)
     chart_times = [kickoff_dt + timedelta(hours=float(h)) for h in chart_offsets]
-    chart_multipliers = [float(curve(h)) for h in chart_offsets]
-    chart_travel_min = [baseline_minutes * m for m in chart_multipliers]
+    chart_pairs = [_travel_at(float(h)) for h in chart_offsets]
+    chart_travel_min = [p[0] for p in chart_pairs]
+    chart_multipliers = [p[1] for p in chart_pairs]
 
     return {
         "departure_time": best_departure,

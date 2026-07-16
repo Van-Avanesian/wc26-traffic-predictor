@@ -465,6 +465,21 @@ def find_departure_time_xgb(
     # must extend at least one full travel time before kickoff so that long
     # drives (>5h) still find a feasible departure instead of falling back to a
     # nonsensical "leave 5h early" result. See find_departure_time for details.
+    # Event congestion only affects the local approach to the stadium, not the
+    # entire trip. For a long-haul drive the highway miles happen at normal
+    # speed and only the last ~90 min are subject to game traffic. Evaluating
+    # the multiplier at the moment the driver reaches that approach (near
+    # arrival for long drives) is what makes a cross-country trip show a real
+    # final-stretch delay instead of "+0 min". See find_departure_time.
+    LOCAL_APPROACH_CAP_MIN = 90.0
+    affected_min = min(baseline_minutes, LOCAL_APPROACH_CAP_MIN)
+    highway_min  = baseline_minutes - affected_min
+    highway_h    = highway_min / 60.0
+
+    def _travel_at(offset_h):
+        approach_mult = float(curve(offset_h + highway_h))
+        return highway_min + affected_min * approach_mult, approach_mult
+
     lookback_h = max(5.0, baseline_minutes / 60.0 + 6.0)
     sweep_offsets_h = np.arange(-lookback_h, 0.05, 5 / 60)
     best_departure  = None
@@ -473,8 +488,7 @@ def find_departure_time_xgb(
 
     for offset_h in sweep_offsets_h:
         departure_dt = kickoff_dt + timedelta(hours=float(offset_h))
-        mult         = float(curve(offset_h))
-        travel_min   = baseline_minutes * mult
+        travel_min, mult = _travel_at(offset_h)
         arrival_dt   = departure_dt + timedelta(minutes=travel_min)
 
         if arrival_dt <= desired_arrival_dt:
@@ -494,8 +508,9 @@ def find_departure_time_xgb(
     # Full chart data (T-5h → T+4h in 15-min steps)
     chart_offsets    = np.arange(-5.0, 4.1, 0.25)
     chart_times      = [kickoff_dt + timedelta(hours=float(h)) for h in chart_offsets]
-    chart_multipliers = [float(curve(h)) for h in chart_offsets]
-    chart_travel_min  = [baseline_minutes * m for m in chart_multipliers]
+    chart_pairs      = [_travel_at(float(h)) for h in chart_offsets]
+    chart_travel_min  = [p[0] for p in chart_pairs]
+    chart_multipliers = [p[1] for p in chart_pairs]
 
     return {
         "departure_time":          best_departure,
