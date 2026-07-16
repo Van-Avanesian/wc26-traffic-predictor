@@ -133,11 +133,11 @@ wc26-traffic-predictor/
 │   ├── multiplier.py           # Hand-tuned Gaussian traffic model
 │   └── xgboost_multiplier.py  # XGBoost ML model + feature engineering
 │
-├── data/
-│   ├── venues.py               # All 11 venues with traffic characteristics
-│   ├── schedule.py             # Full WC 2026 match schedule
-│   ├── teams.py                # FIFA rankings + team demand multipliers
-│   └── reference_events.py    # 53 calibration events (training data)
+├── data/                       # Data (JSON) is separate from the loaders (.py)
+│   ├── venues.json / venues.py             # 11 venues + traffic characteristics
+│   ├── schedule.json / schedule.py         # Full WC 2026 match schedule
+│   ├── teams.json / teams.py               # FIFA rankings + demand-multiplier logic
+│   └── reference_events.json / reference_events.py  # 53 calibration events
 │
 └── utils/
     └── maps.py                 # Google Maps API + baseline travel time logic
