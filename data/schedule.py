@@ -590,29 +590,29 @@ WC_SCHEDULE = [
         "expected_capacity_pct": 1.0,
     },
 
-    # Semi-Finals — July 14–15
+    # Semi-Finals — July 14–15 (actual matchups)
     {
         "game_id": "SF_DAL_01",
         "venue_id": "att",
         "stage": "Semi-Final",
         "stage_importance": 5,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Spain",
+        "away": "France",
         "date": date(2026, 7, 14),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(14, 0),   # 12pm PT → 2pm CT
         "expected_capacity_pct": 1.0,
     },
     {
-        "game_id": "SF_NYJ_01",
-        "venue_id": "metlife",
+        "game_id": "SF_ATL_01",
+        "venue_id": "mercedes_benz",
         "stage": "Semi-Final",
         "stage_importance": 5,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "England",
+        "away": "Argentina",
         "date": date(2026, 7, 15),
-        "kickoff_local": time(18, 0),
+        "kickoff_local": time(15, 0),   # 12pm PT → 3pm ET
         "expected_capacity_pct": 1.0,
     },
 
@@ -623,10 +623,10 @@ WC_SCHEDULE = [
         "stage": "Third Place",
         "stage_importance": 6,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "France",
+        "away": "England",
         "date": date(2026, 7, 18),
-        "kickoff_local": time(15, 0),
+        "kickoff_local": time(17, 0),   # 2pm PT → 5pm ET
         "expected_capacity_pct": 0.92,
     },
 
@@ -637,10 +637,10 @@ WC_SCHEDULE = [
         "stage": "Final",
         "stage_importance": 6,
         "group": None,
-        "home": "TBD",
-        "away": "TBD",
+        "home": "Spain",
+        "away": "Argentina",
         "date": date(2026, 7, 19),
-        "kickoff_local": time(18, 0),   # 6pm ET
+        "kickoff_local": time(15, 0),   # 12pm PT → 3pm ET
         "expected_capacity_pct": 1.0,
     },
 ]
