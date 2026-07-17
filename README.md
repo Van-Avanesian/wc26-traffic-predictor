@@ -154,7 +154,7 @@ baseline = free_flow_time × time_of_day_factor × city_traffic_factor
 ```
 
 - **Free-flow time** — Google Maps route duration with no traffic model applied
-- **Time-of-day factor** — multiplier reflecting typical congestion patterns (Friday 5pm ≈ 1.8×, Tuesday 10am ≈ 1.04×)
+- **Time-of-day factor** — multiplier reflecting typical congestion patterns for a neutral city (Friday 5pm ≈ 1.47×, Tuesday 10am ≈ 1.04×)
 - **City traffic factor** — metro-level congestion baseline (SoFi/LA: 1.55×, Arrowhead/KC: 1.05×)
 
 The WC event multiplier is then stacked on top of this baseline.

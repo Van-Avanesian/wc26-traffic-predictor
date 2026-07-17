@@ -149,11 +149,12 @@ def get_baseline_travel_time(
 
 def _time_of_day_factor(weekday: int, hour: int) -> float:
     """
-    Multiplier over free-flow drive time for typical US urban areas.
+    Multiplier over free-flow drive time for a NEUTRAL mid-sized US city.
 
-    Built from general congestion patterns across major US metros:
-      - Tuesday 10am is the lightest (~1.05×)
-      - Friday 5pm is the heaviest (~2.0×)
+    City-specific congestion is layered on separately via city_traffic_factor
+    (see data/venues.py), so these base factors are intentionally modest:
+      - Tuesday 10am is the lightest (~1.04×)
+      - Friday 5pm is the heaviest (1.28 × 1.15 Friday bump ≈ 1.47×)
       - Weekends are lighter than weekday PM rush but not free-flow
 
     weekday : 0=Monday … 6=Sunday
